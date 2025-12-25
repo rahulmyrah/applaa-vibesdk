@@ -15,6 +15,7 @@ import { useDragDrop } from '@/hooks/use-drag-drop';
 import { ImageUploadButton } from '@/components/image-upload-button';
 import { ImageAttachmentPreview } from '@/components/image-attachment-preview';
 import { toast } from 'sonner';
+import ApplaaLogo from '@/assets/applaa-logo-new.jpeg';
 
 export default function Home() {
 	const navigate = useNavigate();
@@ -204,9 +205,30 @@ export default function Home() {
 							"px-6 p-8 flex flex-col items-center z-10",
 							discoverReady ? "mt-48" : "mt-[20vh] sm:mt-[24vh] md:mt-[28vh]"
 						)}>
-						<h1 className="text-shadow-sm text-shadow-red-200 dark:text-shadow-red-900 text-accent font-medium leading-[1.1] tracking-tight text-5xl w-full mb-4 bg-clip-text bg-gradient-to-r from-text-primary to-text-primary/90">
-							What should we build today?
-						</h1>
+						{/* App Logo */}
+						<motion.img
+							src={ApplaaLogo}
+							alt="Applaa"
+							className="mb-6 transition-all duration-300"
+							style={{
+								width: '120px',
+								height: 'auto',
+								objectFit: 'contain',
+							}}
+							initial={{ opacity: 0, y: -10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.3 }}
+						/>
+						
+						{/* Prompts -> app in minutes text */}
+						<motion.h2
+							className="text-text-secondary/80 font-medium text-xl mb-6"
+							initial={{ opacity: 0, y: -10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.3, delay: 0.1 }}
+						>
+							Prompts → app in minutes
+						</motion.h2>
 
 						<form
 							method="POST"
