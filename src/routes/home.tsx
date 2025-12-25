@@ -203,7 +203,7 @@ export default function Home() {
 						transition={{ layout: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
 						className={clsx(
 							"px-6 p-8 flex flex-col items-center z-10",
-							discoverReady ? "mt-48" : "mt-[20vh] sm:mt-[24vh] md:mt-[28vh]"
+							discoverReady ? "mt-24" : "mt-[12vh] sm:mt-[12vh] md:mt-[12vh]"
 						)}>
 						{/* App Logo */}
 						<motion.img
@@ -211,7 +211,7 @@ export default function Home() {
 							alt="Applaa"
 							className="mb-6 transition-all duration-300"
 							style={{
-								width: '120px',
+								width: '100px',
 								height: 'auto',
 								objectFit: 'contain',
 							}}
