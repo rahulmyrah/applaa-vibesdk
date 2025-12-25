@@ -211,7 +211,7 @@ export default function Home() {
 							alt="Applaa"
 							className="mb-6 transition-all duration-300"
 							style={{
-								width: '10px',
+								width: '100px',
 								height: 'auto',
 								objectFit: 'contain',
 							}}
