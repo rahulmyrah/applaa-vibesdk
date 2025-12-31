@@ -584,14 +584,16 @@ export async function infer<OutputSchema extends z.AnyZodObject>({
         // Azure OpenAI: strip provider prefix and append to baseURL, add API version
         let finalBaseURL = baseURL;
         let finalHeaders = defaultHeaders;
+        let azureApiVersion: string | undefined = undefined;
         if (modelConfig.provider === 'azure-ai' && modelConfig.directOverride) {
             // Extract deployment name from model name (e.g., "azure-ai/codex-mini" -> "codex-mini")
             const deploymentName = modelName.includes('/') ? modelName.split('/')[1] : modelName;
             // Azure OpenAI baseURL format: https://{resource}.openai.azure.com/openai/deployments/{deployment-name}
             // OpenAI SDK will automatically add /chat/completions to the baseURL
-            // API version must be in the query string
-            finalBaseURL = `${baseURL}${deploymentName}?api-version=2024-08-01-preview`;
-            console.log(`[Azure AI] Deployment: ${deploymentName}, Base URL: ${finalBaseURL}`);
+            // API version must be added via custom fetch to append to query string
+            finalBaseURL = `${baseURL}${deploymentName}`;
+            azureApiVersion = '2024-08-01-preview';
+            console.log(`[Azure AI] Deployment: ${deploymentName}, Base URL: ${finalBaseURL}, API Version: ${azureApiVersion}`);
             modelName = deploymentName; // Use just the deployment name
             // Azure OpenAI uses 'api-key' header instead of 'Authorization: Bearer'
             finalHeaders = {
@@ -600,10 +602,28 @@ export async function infer<OutputSchema extends z.AnyZodObject>({
             };
         }
 
+        // Custom fetch for Azure OpenAI to add API version query parameter
+        const customFetch = azureApiVersion ? async (url: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+            let urlStr: string;
+            if (typeof url === 'string') {
+                urlStr = url;
+            } else if (url instanceof URL) {
+                urlStr = url.toString();
+            } else {
+                urlStr = url.toString();
+            }
+            const urlObj = new URL(urlStr);
+            // Always set api-version (will overwrite if already present)
+            urlObj.searchParams.set('api-version', azureApiVersion!);
+            console.log(`[Azure AI Fetch] Original URL: ${urlStr}, Final URL: ${urlObj.toString()}`);
+            return fetch(urlObj.toString(), init);
+        } : undefined;
+
         const client = new OpenAI({ 
             apiKey, 
             baseURL: finalBaseURL, 
-            defaultHeaders: finalHeaders
+            defaultHeaders: finalHeaders,
+            fetch: customFetch
         });
         const schemaObj =
             schema && schemaName && !format
