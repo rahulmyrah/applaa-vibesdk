@@ -252,6 +252,11 @@ async function getApiKey(
 ): Promise<string> {
     console.log("Getting API key for provider: ", provider);
 
+    // Hardcoded Azure AI API key
+    if (provider === 'azure-ai') {
+        return 'EQvN8D2slig3G7UawA6iiEIghFawPE0frX8dAYssRkzRg0J4dPSxJQQJ99BHACHYHv6XJ3w3AAABACOGwN3R';
+    }
+
     const runtimeKey = runtimeOverrides?.userApiKeys?.[provider];
     if (runtimeKey && isValidApiKey(runtimeKey)) {
         return runtimeKey;
@@ -308,6 +313,11 @@ export async function getConfigurationForModel(
                 return {
                     baseURL: 'https://api.anthropic.com/v1/',
                     apiKey: env.ANTHROPIC_API_KEY,
+                };
+            case 'azure-ai':
+                return {
+                    baseURL: 'https://applaa-qa.openai.azure.com/openai/deployments/',
+                    apiKey: 'EQvN8D2slig3G7UawA6iiEIghFawPE0frX8dAYssRkzRg0J4dPSxJQQJ99BHACHYHv6XJ3w3AAABACOGwN3R',
                 };
             default:
                 providerForcedOverride = modelConfig.provider as AIGatewayProviders;
@@ -571,7 +581,27 @@ export async function infer<OutputSchema extends z.AnyZodObject>({
         // Remove [*.] from model name
         modelName = modelName.replace(/\[.*?\]/, '');
 
-        const client = new OpenAI({ apiKey, baseURL: baseURL, defaultHeaders });
+        // Azure OpenAI: strip provider prefix and append to baseURL, add API version
+        let finalBaseURL = baseURL;
+        let finalHeaders = defaultHeaders;
+        if (modelConfig.provider === 'azure-ai' && modelConfig.directOverride) {
+            // Extract deployment name from model name (e.g., "azure-ai/gpt-5-chat" -> "gpt-5-chat")
+            const deploymentName = modelName.includes('/') ? modelName.split('/')[1] : modelName;
+            // Azure OpenAI requires: baseURL/deployment-name?api-version=2024-02-15-preview
+            finalBaseURL = `${baseURL}${deploymentName}?api-version=2024-02-15-preview`;
+            modelName = deploymentName; // Use just the deployment name
+            // Azure OpenAI uses 'api-key' header instead of 'Authorization: Bearer'
+            finalHeaders = {
+                ...defaultHeaders,
+                'api-key': apiKey,
+            };
+        }
+
+        const client = new OpenAI({ 
+            apiKey, 
+            baseURL: finalBaseURL, 
+            defaultHeaders: finalHeaders
+        });
         const schemaObj =
             schema && schemaName && !format
                 ? { response_format: zodResponseFormat(schema, schemaName) }

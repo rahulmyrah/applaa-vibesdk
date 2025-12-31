@@ -160,6 +160,20 @@ export function getTemplatesData(): SecretTemplate[] {
 			required: false,
 			category: 'byok',
 		},
+		{
+			id: 'AZURE_AI_API_KEY_BYOK',
+			displayName: 'Azure AI (BYOK)',
+			envVarName: 'AZURE_AI_API_KEY_BYOK',
+			provider: 'azure-ai',
+			icon: '☁️',
+			description:
+				'Use your Azure AI API key for Azure OpenAI models via Cloudflare AI Gateway',
+			instructions: 'Go to Azure Portal → Azure OpenAI → Keys and Endpoint → Create new key',
+			placeholder: 'Any Azure AI API key format',
+			validation: '^.{10,}$',
+			required: false,
+			category: 'byok',
+		},
 
 		// Development Tools
 		{

@@ -53,9 +53,16 @@ export function getPlatformEnabledProviders(env: Env): string[] {
 		'google-ai-studio',
 		'cerebras',
 		'groq',
+		'azure-ai',
 	];
 
 	for (const provider of providerList) {
+		// Azure AI is always enabled (hardcoded key)
+		if (provider === 'azure-ai') {
+			enabledProviders.push(provider);
+			continue;
+		}
+
 		const providerKeyString = provider.toUpperCase().replaceAll('-', '_');
 		const envKey = `${providerKeyString}_API_KEY` as keyof Env;
 		const apiKey = env[envKey] as string;
