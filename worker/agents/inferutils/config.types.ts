@@ -337,7 +337,164 @@ const MODELS_MASTER = {
             creditCost: 8, // $0.22
             contextSize: 262144, // 256K Context
         },
-    }
+    },
+
+    // --- Azure AI Models ---
+    AZURE_GPT_4O: {
+        id: 'azure-ai/gpt-4o',
+        config: {
+            name: 'Azure GPT-4o',
+            size: ModelSize.LARGE,
+            provider: 'azure-ai',
+            creditCost: 5,
+            contextSize: 128000,
+            directOverride: true,
+        }
+    },
+    AZURE_GPT_4O_MINI: {
+        id: 'azure-ai/gpt-4o-mini',
+        config: {
+            name: 'Azure GPT-4o Mini',
+            size: ModelSize.REGULAR,
+            provider: 'azure-ai',
+            creditCost: 1.5,
+            contextSize: 128000,
+            directOverride: true,
+        }
+    },
+    AZURE_GPT_5_CHAT: {
+        id: 'azure-ai/gpt-5-chat',
+        config: {
+            name: 'Azure GPT-5 Chat',
+            size: ModelSize.LARGE,
+            provider: 'azure-ai',
+            creditCost: 5,
+            contextSize: 400000,
+            directOverride: true,
+        }
+    },
+    AZURE_GPT_5_MINI: {
+        id: 'azure-ai/gpt-5-mini',
+        config: {
+            name: 'Azure GPT-5 Mini',
+            size: ModelSize.LITE,
+            provider: 'azure-ai',
+            creditCost: 1,
+            contextSize: 400000,
+            directOverride: true,
+        }
+    },
+    AZURE_GPT_5_NANO: {
+        id: 'azure-ai/gpt-5-nano',
+        config: {
+            name: 'Azure GPT-5 Nano',
+            size: ModelSize.LITE,
+            provider: 'azure-ai',
+            creditCost: 0.8,
+            contextSize: 400000,
+            directOverride: true,
+        }
+    },
+    AZURE_GPT_5_1_CHAT: {
+        id: 'azure-ai/gpt-5.1-chat',
+        config: {
+            name: 'Azure GPT-5.1 Chat',
+            size: ModelSize.LARGE,
+            provider: 'azure-ai',
+            creditCost: 7,
+            contextSize: 400000,
+            directOverride: true,
+        }
+    },
+    AZURE_GPT_5_1_CODEX_MINI: {
+        id: 'azure-ai/gpt-5.1-codex-mini',
+        config: {
+            name: 'Azure GPT-5.1 Codex Mini',
+            size: ModelSize.LITE,
+            provider: 'azure-ai',
+            creditCost: 1,
+            contextSize: 400000,
+            directOverride: true,
+        }
+    },
+    AZURE_GPT_4_1_MINI: {
+        id: 'azure-ai/gpt-4.1-mini',
+        config: {
+            name: 'Azure GPT-4.1 Mini',
+            size: ModelSize.REGULAR,
+            provider: 'azure-ai',
+            creditCost: 1.5,
+            contextSize: 128000,
+            directOverride: true,
+        }
+    },
+    AZURE_CLAUDE_OPUS_4_5: {
+        id: 'azure-ai/claude-opus-4-5',
+        config: {
+            name: 'Azure Claude Opus 4.5',
+            size: ModelSize.LARGE,
+            provider: 'azure-ai',
+            creditCost: 20,
+            contextSize: 200000,
+            directOverride: true,
+        }
+    },
+    AZURE_CLAUDE_SONNET_4_5: {
+        id: 'azure-ai/claude-sonnet-4-5',
+        config: {
+            name: 'Azure Claude Sonnet 4.5',
+            size: ModelSize.LARGE,
+            provider: 'azure-ai',
+            creditCost: 12,
+            contextSize: 200000,
+            directOverride: true,
+        }
+    },
+    AZURE_O1: {
+        id: 'azure-ai/o1',
+        config: {
+            name: 'Azure O1',
+            size: ModelSize.LARGE,
+            provider: 'azure-ai',
+            creditCost: 15,
+            contextSize: 200000,
+            directOverride: true,
+        }
+    },
+    AZURE_O4_MINI: {
+        id: 'azure-ai/o4-mini',
+        config: {
+            name: 'Azure O4 Mini',
+            size: ModelSize.REGULAR,
+            provider: 'azure-ai',
+            creditCost: 6,
+            contextSize: 200000,
+            directOverride: true,
+        }
+    },
+    AZURE_GROK_4_FAST_REASONING: {
+        id: 'azure-ai/grok-4-fast-reasoning',
+        config: {
+            name: 'Azure Grok 4 Fast Reasoning',
+            size: ModelSize.LITE,
+            provider: 'azure-ai',
+            creditCost: 0.8,
+            contextSize: 2000000,
+            nonReasoning: true,
+            directOverride: true,
+        }
+    },
+    AZURE_CODEX_MINI: {
+        id: 'azure-ai/codex-mini',
+        config: {
+            name: 'Azure Codex Mini',
+            size: ModelSize.LITE,
+            provider: 'azure-ai',
+            creditCost: 1,
+            contextSize: 128000,
+            directOverride: true,
+        }
+    },
 } as const;
 
 /**
