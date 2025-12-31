@@ -585,10 +585,13 @@ export async function infer<OutputSchema extends z.AnyZodObject>({
         let finalBaseURL = baseURL;
         let finalHeaders = defaultHeaders;
         if (modelConfig.provider === 'azure-ai' && modelConfig.directOverride) {
-            // Extract deployment name from model name (e.g., "azure-ai/gpt-5-chat" -> "gpt-5-chat")
+            // Extract deployment name from model name (e.g., "azure-ai/codex-mini" -> "codex-mini")
             const deploymentName = modelName.includes('/') ? modelName.split('/')[1] : modelName;
-            // Azure OpenAI requires: baseURL/deployment-name?api-version=2024-02-15-preview
-            finalBaseURL = `${baseURL}${deploymentName}?api-version=2024-02-15-preview`;
+            // Azure OpenAI baseURL format: https://{resource}.openai.azure.com/openai/deployments/{deployment-name}
+            // OpenAI SDK will automatically add /chat/completions to the baseURL
+            // API version must be in the query string
+            finalBaseURL = `${baseURL}${deploymentName}?api-version=2024-08-01-preview`;
+            console.log(`[Azure AI] Deployment: ${deploymentName}, Base URL: ${finalBaseURL}`);
             modelName = deploymentName; // Use just the deployment name
             // Azure OpenAI uses 'api-key' header instead of 'Authorization: Bearer'
             finalHeaders = {
@@ -744,7 +747,19 @@ export async function infer<OutputSchema extends z.AnyZodObject>({
                 throw new AbortError('**User cancelled inference**', toolCallContext);
             }
             
-            console.error(`Failed to get inference response from OpenAI: ${error}`);
+            // Enhanced error logging for Azure AI
+            if (modelConfig.provider === 'azure-ai' && modelConfig.directOverride) {
+                console.error(`[Azure AI Error] Failed to get inference response:`, {
+                    error: error instanceof Error ? error.message : String(error),
+                    deploymentName: modelName,
+                    baseURL: finalBaseURL,
+                    endpoint: `${finalBaseURL}/chat/completions`,
+                    hasApiKey: !!apiKey,
+                    apiKeyLength: apiKey?.length || 0
+                });
+            } else {
+                console.error(`Failed to get inference response from OpenAI: ${error}`);
+            }
             // if ((error instanceof Error && error.message.includes('429')) || (typeof error === 'string' && error.includes('429'))) {
 
             //     throw new RateLimitExceededError('Rate limit exceeded in LLM calls, Please try again later', RateLimitType.LLM_CALLS);
